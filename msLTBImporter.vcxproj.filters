@@ -1,0 +1,229 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="LTSDK">
+      <UniqueIdentifier>{a2152629-eb7a-4a41-9951-6d59e20fdbce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LTSDK\runtime">
+      <UniqueIdentifier>{e3ab719b-e3f5-4ccb-acae-4ccef159f240}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LTSDK\runtime\kernel">
+      <UniqueIdentifier>{156f2f32-6ed1-4119-a421-483e8d6a38d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LTSDK\runtime\lithtemplate">
+      <UniqueIdentifier>{1feda225-8428-44c2-8793-877ecc1817a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LTSDK\runtime\model">
+      <UniqueIdentifier>{263b944c-3636-46f7-b5bd-4dc09d7917bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LTSDK\runtime\shared">
+      <UniqueIdentifier>{a616f05b-f353-4ff8-82d5-4a3f1b41e5f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LTSDK\runtime\render">
+      <UniqueIdentifier>{a3e34e18-2d60-4d90-bcec-c4592ee9ca5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LTSDK\sdk">
+      <UniqueIdentifier>{d897dc6e-9f02-4031-9cbf-4ffc468bafb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LTSDK\sdk\physics">
+      <UniqueIdentifier>{498afa4e-cbf8-4d40-99dc-48c18f7ac7c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LTSDK\sdk\sys">
+      <UniqueIdentifier>{af25db02-a320-4df9-aca1-427bc63710f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LTSDK\stdlith">
+      <UniqueIdentifier>{f3ddf104-3ae7-4efa-828c-1e341a034287}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="msLTBImporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LTSDK\runtime\kernel\de_file.cpp">
+      <Filter>LTSDK\runtime\kernel</Filter>
+    </ClCompile>
+    <ClCompile Include="LTSDK\runtime\model\d3d_model_load.cpp">
+      <Filter>LTSDK\runtime\model</Filter>
+    </ClCompile>
+    <ClCompile Include="LTSDK\runtime\model\model.cpp">
+      <Filter>LTSDK\runtime\model</Filter>
+    </ClCompile>
+    <ClCompile Include="LTSDK\runtime\model\model_load.cpp">
+      <Filter>LTSDK\runtime\model</Filter>
+    </ClCompile>
+    <ClCompile Include="LTSDK\runtime\model\modelallocations.cpp">
+      <Filter>LTSDK\runtime\model</Filter>
+    </ClCompile>
+    <ClCompile Include="LTSDK\runtime\shared\engine_vars.cpp">
+      <Filter>LTSDK\runtime\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="LTSDK\runtime\shared\genltstream.cpp">
+      <Filter>LTSDK\runtime\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="LTSDK\runtime\render\d3dmeshrendobj_skel.cpp">
+      <Filter>LTSDK\runtime\render</Filter>
+    </ClCompile>
+    <ClCompile Include="LTSDK\sdk\LTEulerAngles.cpp">
+      <Filter>LTSDK\sdk</Filter>
+    </ClCompile>
+    <ClCompile Include="LTSDK\sdk\ltquatbase.cpp">
+      <Filter>LTSDK\sdk</Filter>
+    </ClCompile>
+    <ClCompile Include="LTSDK\stdlith\dynarray.cpp">
+      <Filter>LTSDK\stdlith</Filter>
+    </ClCompile>
+    <ClCompile Include="LTSDK\stdlith\helpers.cpp">
+      <Filter>LTSDK\stdlith</Filter>
+    </ClCompile>
+    <ClCompile Include="LTSDK\stdlith\l_allocator.cpp">
+      <Filter>LTSDK\stdlith</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="msLTBImporter.def">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="msLTBImporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\runtime\kernel\de_file.h">
+      <Filter>LTSDK\runtime\kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\runtime\lithtemplate\ltt_buffer.h">
+      <Filter>LTSDK\runtime\lithtemplate</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\runtime\model\ltb.h">
+      <Filter>LTSDK\runtime\model</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\runtime\model\model.h">
+      <Filter>LTSDK\runtime\model</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\runtime\model\modelallocations.h">
+      <Filter>LTSDK\runtime\model</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\runtime\shared\bdefs.h">
+      <Filter>LTSDK\runtime\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\runtime\shared\gamemath.h">
+      <Filter>LTSDK\runtime\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\runtime\shared\genltstream.h">
+      <Filter>LTSDK\runtime\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\runtime\shared\renderobject.h">
+      <Filter>LTSDK\runtime\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\runtime\render\d3dmeshrendobj_skel.h">
+      <Filter>LTSDK\runtime\render</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\sdk\iltmemory.h">
+      <Filter>LTSDK\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\sdk\iltstream.h">
+      <Filter>LTSDK\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\sdk\lithtech.h">
+      <Filter>LTSDK\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\sdk\ltanimtracker.h">
+      <Filter>LTSDK\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\sdk\ltassert.h">
+      <Filter>LTSDK\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\sdk\ltbasedefs.h">
+      <Filter>LTSDK\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\sdk\ltbasetypes.h">
+      <Filter>LTSDK\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\sdk\ltcodes.h">
+      <Filter>LTSDK\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\sdk\LTEulerAngles.h">
+      <Filter>LTSDK\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\sdk\ltinteger.h">
+      <Filter>LTSDK\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\sdk\ltlink.h">
+      <Filter>LTSDK\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\sdk\ltmatrix.h">
+      <Filter>LTSDK\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\sdk\ltmem.h">
+      <Filter>LTSDK\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\sdk\ltplane.h">
+      <Filter>LTSDK\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\sdk\ltquatbase.h">
+      <Filter>LTSDK\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\sdk\ltrect.h">
+      <Filter>LTSDK\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\sdk\ltrendererstats.h">
+      <Filter>LTSDK\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\sdk\ltrotation.h">
+      <Filter>LTSDK\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\sdk\ltsysoptim.h">
+      <Filter>LTSDK\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\sdk\ltvector.h">
+      <Filter>LTSDK\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\sdk\physics\coordinate_frame.h">
+      <Filter>LTSDK\sdk\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\sdk\physics\math_phys.h">
+      <Filter>LTSDK\sdk\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\sdk\physics\matrix.h">
+      <Filter>LTSDK\sdk\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\sdk\physics\quaternion.h">
+      <Filter>LTSDK\sdk\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\sdk\physics\vector.h">
+      <Filter>LTSDK\sdk\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\sdk\sys\winoptim.h">
+      <Filter>LTSDK\sdk\sys</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\stdlith\dynarray.h">
+      <Filter>LTSDK\stdlith</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\stdlith\genlist.h">
+      <Filter>LTSDK\stdlith</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\stdlith\helpers.h">
+      <Filter>LTSDK\stdlith</Filter>
+    </ClInclude>
+    <ClInclude Include="LTSDK\stdlith\l_allocator.h">
+      <Filter>LTSDK\stdlith</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="msLTBImporter.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

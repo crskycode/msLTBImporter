@@ -1,20 +1,12 @@
 // msLTBImporter.cpp : Defines the initialization routines for the DLL.
 //
 
-#include "stdafx.h"
+#include <windows.h>
 #include "msLTBImporter.h"
 #include "de_file.h"
 #include "model.h"
 #include "LTEulerAngles.h"
-#define GLM_FORCE_RADIANS
-#include <glm.hpp>
-#include <gtc/matrix_transform.hpp>
-#include <gtc/quaternion.hpp>
-#include <gtc/type_ptr.hpp>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 //
 //TODO: If this DLL is dynamically linked against the MFC DLLs,
@@ -42,35 +34,6 @@
 //
 
 
-// CmsLTBImporterApp
-
-BEGIN_MESSAGE_MAP(CMsPlugInApp, CWinApp)
-END_MESSAGE_MAP()
-
-
-// CmsLTBImporterApp construction
-
-CMsPlugInApp::CMsPlugInApp()
-{
-	// TODO: add construction code here,
-	// Place all significant initialization in InitInstance
-}
-
-
-// The one and only CmsLTBImporterApp object
-
-CMsPlugInApp theApp;
-
-
-// CmsLTBImporterApp initialization
-
-BOOL CMsPlugInApp::InitInstance()
-{
-	CWinApp::InitInstance();
-
-	return TRUE;
-}
-
 
 void *DefStdlithAlloc(uint32 size)
 {
@@ -85,14 +48,14 @@ void DefStdlithFree(void *ptr)
 
 void dsi_PrintToConsole(const char *pMsg, ...)
 {
-	va_list ptr;
-	static char string[1024];
-	
-	va_start(ptr, pMsg);
-	vsnprintf(string, sizeof(string), pMsg, ptr);
-	va_end(ptr);
+	//va_list ptr;
+	//static char string[1024];
+	//
+	//va_start(ptr, pMsg);
+	//vsnprintf(string, sizeof(string), pMsg, ptr);
+	//va_end(ptr);
 
-	OutputDebugString(string);
+	//OutputDebugString(string);
 }
 
 void dsi_OnReturnError(int err)
@@ -125,75 +88,44 @@ const char *cPlugIn::GetTitle(void)
 	return szTitle;
 }
 
-typedef float mat4_t[4][4];
+#define CONVERT_TO_RIGHT_HAND
 
-typedef float (*pmat4_t)[4];
-
-#define glm_ptr( x ) glm::value_ptr( x )
-
-void MatrixCopy( const mat4_t a, mat4_t b )
-{
-	int	i, j;
-
-	for ( i = 0; i < 4; i++ )
-	{
-		for ( j = 0; j < 4; j++ )
-		{
-			b[j][i] = a[i][j];
-		}
-	}
-}
-
-// left-handed to right-handed
-glm::mat4 mLeftToRight = glm::scale( glm::mat4( 1.0f ), glm::vec3( 1.0f, 1.0f, -1.0f ) );
-
+static int boneindextable[256];
+static int boneindex;
 
 void RecursiveSetUpBone(msModel *pModel, Model *ltbModel, ModelNode *pNode, const char *pParentName)
 {
 	int nBone = msModel_AddBone(pModel);
 	msBone *pBone = msModel_GetBoneAt(pModel, nBone);
 
+	boneindextable[boneindex++] = nBone;
+
 	msBone_SetName(pBone, pNode->GetName());
 
 	if (pParentName)
 		msBone_SetParentName(pBone, pParentName);
 
-	glm::mat4 mParentL( 1.0f );
+	LTMatrix mBoneMatrix;
+	LTVector vPos;
+	EulerAngles vEul;
 
-	if ( pNode->m_iParentNode != NODEPARENT_NONE )
-	{
-		LTMatrix ltParent;
-		ltParent = ltbModel->GetNode( pNode->m_iParentNode )->GetGlobalTransform();
-		MatrixCopy( ltParent.m, (pmat4_t)glm_ptr( mParentL ) );
-	}
+	mBoneMatrix = pNode->GetFromParentTransform();
 
-	// Convert to Right-Hand
-	glm::mat4 mParentR;
-	mParentR = /*mLeftToRight **/ mParentL;
+#ifdef CONVERT_TO_RIGHT_HAND
+	// Convert ratation to RH
+	mBoneMatrix.m[0][2] = -mBoneMatrix.m[0][2];
+	mBoneMatrix.m[1][2] = -mBoneMatrix.m[1][2];
+	mBoneMatrix.m[2][0] = -mBoneMatrix.m[2][0];
+	mBoneMatrix.m[2][1] = -mBoneMatrix.m[2][1];
+	// Convert translation to RH
+	mBoneMatrix.m[2][3] = -mBoneMatrix.m[2][3];
+#endif
 
-	LTMatrix ltGlobal;
-	ltGlobal = pNode->GetGlobalTransform();
+	vEul = Eul_FromMatrix(mBoneMatrix, EulOrdXYZs);
+	mBoneMatrix.GetTranslation(vPos);
 
-	glm::mat4 mGlobalL;
-	MatrixCopy( ltGlobal.m, (pmat4_t)glm_ptr( mGlobalL ) );
-
-	// Convert to Right-Hand
-	glm::mat4 mGlobalR;
-	mGlobalR = /*mLeftToRight **/ mGlobalL;
-
-	glm::mat4 mLocal;
-	mLocal = glm::inverse( mParentR ) * mGlobalR;
-
-	// Convert matrix to quaternion
-	glm::quat qRot;
-	qRot = glm::quat_cast( mLocal );
-
-	// Convert quaternion to euler angles
-	glm::vec3 eRot;
-	eRot = glm::eulerAngles( qRot );
-
-	msVec3 pos = { mLocal[3][0], mLocal[3][1], mLocal[3][2] };
-	msVec3 rot = { eRot.x, eRot.y, eRot.z };
+	msVec3 pos = { vPos.x, vPos.y, vPos.z };
+	msVec3 rot = { vEul.x, vEul.y, vEul.z };
 	msBone_SetPosition( pBone, pos );
 	msBone_SetRotation( pBone, rot );
 
@@ -203,33 +135,10 @@ void RecursiveSetUpBone(msModel *pModel, Model *ltbModel, ModelNode *pNode, cons
 	}
 }
 
-int ChooseWeights(Weights &w)
-{
-	//Choose the first bone
-	for (int i = 0; i < 4; ++i)
-	{
-		if (w.m_fWeight[i] > 0.0f)
-			return w.m_iBone[i];
-	}
-
-	//If all weights are zero, should choose the last one
-	for (int i = 3; i > -1; --i)
-	{
-		if (w.m_iBone[i] != 0 && w.m_iBone[i] != 255)
-			return w.m_iBone[i];
-	}
-
-	//Invalid weights ?
-	return 0;
-}
-
 int cPlugIn::Execute(msModel *pModel)
 {
 	if (!pModel)
 		return -1;
-
-	//Switch the module state for MFC Dlls
-	AFX_MANAGE_STATE(AfxGetStaticModuleState());
 
 	OPENFILENAME ofn;
 	memset(&ofn, 0, sizeof(OPENFILENAME));
@@ -261,7 +170,7 @@ int cPlugIn::Execute(msModel *pModel)
 	if (pStream->Open(szFile) != LT_OK)
 	{
 		delete pStream;
-		::AfxMessageBox("Couldn't to open file", MB_ICONERROR | MB_OK);
+		::MessageBox(GetActiveWindow(), "Couldn't to open file", "Error", MB_ICONERROR | MB_OK);
 		return 0;
 	}
 
@@ -270,7 +179,7 @@ int cPlugIn::Execute(msModel *pModel)
 	{
 		pStream->Close();
 		delete pStream;
-		::AfxMessageBox("Out of memory", MB_ICONERROR | MB_OK);
+		::MessageBox(GetActiveWindow(), "Out of memory", "Error", MB_ICONERROR | MB_OK);
 		return 0;
 	}
 
@@ -284,7 +193,7 @@ int cPlugIn::Execute(msModel *pModel)
 		pStream->Close();
 		delete pStream;
 		delete pRequest;
-		::AfxMessageBox("Out of memory", MB_ICONERROR | MB_OK);
+		::MessageBox(GetActiveWindow(), "Out of memory", "Error", MB_ICONERROR | MB_OK);
 		return 0;
 	}
 
@@ -294,7 +203,7 @@ int cPlugIn::Execute(msModel *pModel)
 		delete pStream;
 		delete pRequest;
 		delete pInpModel;
-		::AfxMessageBox("Couldn't to load file", MB_ICONERROR | MB_OK);
+		::MessageBox(GetActiveWindow(), "Couldn't to load file", "Error", MB_ICONERROR | MB_OK);
 		return 0;
 	}
 
@@ -302,8 +211,16 @@ int cPlugIn::Execute(msModel *pModel)
 //	if (msModel_GetBoneCount() > 0)
 //	{
 //	}
+
+	boneindex = 0;
+
 	//Node <--> Bone
 	RecursiveSetUpBone(pModel, pInpModel, pInpModel->GetRootNode(), NULL);
+
+#ifdef CONVERT_TO_RIGHT_HAND
+	LTMatrix mMat1;
+	mMat1.SetupScalingMatrix(LTVector(1.0, 1.0, -1.0));
+#endif
 
 	//Pieces <--> Mesh
 	for (uint32 i = 0; i < pInpModel->m_Pieces.GetSize(); i++)
@@ -325,42 +242,47 @@ int cPlugIn::Execute(msModel *pModel)
 		{
 			//Add Vertex
 			int nVertex = msMesh_AddVertex(pMesh);
-			msVertex *pVertex = msMesh_GetVertexAt(pMesh, nVertex);
+			msVertex* pVertex = msMesh_GetVertexAt(pMesh, nVertex);
+			msVertexEx* pVertexEx = msMesh_GetVertexExAt(pMesh, nVertex);
 
 			//Add Normal
 			int nVertexNorm = msMesh_AddVertexNormal(pMesh);
 
 			//Get Vertex
-			ModelVert *VERT = &pLOD->m_Verts[j];
+			ModelVert * pvert = &pLOD->m_Verts[j];
 
-			glm::vec4 lPos;
-			lPos.x = VERT->m_Vec.x;
-			lPos.y = VERT->m_Vec.y;
-			lPos.z = VERT->m_Vec.z;
-			lPos.w = 1.0f;
+			LTVector Vec;
+			LTVector Normal;
 
-			glm::vec4 lNor;
-			lNor.x = VERT->m_Normal.x;
-			lNor.y = VERT->m_Normal.y;
-			lNor.z = VERT->m_Normal.z;
-			lNor.w = 0.0f;
+#ifdef CONVERT_TO_RIGHT_HAND
+			mMat1.Apply4x4(pvert->m_Vec, Vec);
+			mMat1.Apply3x3(pvert->m_Normal, Normal);
+#endif
 
-			glm::vec4 rPos;
-			rPos = mLeftToRight * lPos;
-
-			glm::vec4 rNor;
-			rNor = mLeftToRight * lNor;
-
-			msVec3 pos = { rPos.x, rPos.y, rPos.z };
-			msVec3 norm = { rNor.x, rNor.y, rNor.z };
-			msVec2 st = { VERT->m_Uv.tu, VERT->m_Uv.tv };
-
-		//	int nBone = ChooseWeights(VERT->m_Weights);
+			msVec3 pos = { Vec.x, Vec.y, Vec.z };
+			msVec3 norm = { Normal.x, Normal.y, Normal.z };
+			msVec2 st = { pvert->m_Uv.tu, pvert->m_Uv.tv };
 
 			//SetUp Vertex
 			msVertex_SetVertex(pVertex, pos);
 			msVertex_SetTexCoords(pVertex, st);
-		//	msVertex_SetBoneIndex(pVertex, nBone);
+
+			if (pvert->m_NumBones == 1)
+			{
+				msVertex_SetBoneIndex(pVertex, boneindextable[pvert->m_Weights.m_iBone[0]]);
+			}
+			else if (pvert->m_NumBones > 1)
+			{
+				// WHAT THE FUCK ???
+
+				msVertex_SetBoneIndex(pVertex, boneindextable[pvert->m_Weights.m_iBone[0]]);
+				for (uint32 q = 1; q < pvert->m_NumBones; q++)
+					msVertexEx_SetBoneIndices(pVertexEx, q - 1, boneindextable[pvert->m_Weights.m_iBone[q]]);
+
+				uint32 num = min(3, pvert->m_NumBones);
+				for (uint32 q = 0; q < num; q++)
+					msVertexEx_SetBoneWeights(pVertexEx, q, pvert->m_Weights.m_fWeight[q] * 100.0f);
+			}
 
 			//SetUp Normal
 			msMesh_SetVertexNormalAt(pMesh, nVertexNorm, norm);
@@ -375,8 +297,11 @@ int cPlugIn::Execute(msModel *pModel)
 			//Get Triangle
 			ModelTri *TRI = &pLOD->m_Tris[j];
 
-			//word nIndices[3] = { TRI->m_Indices[0], TRI->m_Indices[1], TRI->m_Indices[2] };
+#ifdef CONVERT_TO_RIGHT_HAND
 			word nIndices[3] = { TRI->m_Indices[2], TRI->m_Indices[1], TRI->m_Indices[0] };
+#else
+			word nIndices[3] = { TRI->m_Indices[0], TRI->m_Indices[1], TRI->m_Indices[2] };
+#endif
 
 			//SetUp Triangle
 			msTriangle_SetVertexIndices(pTriangle, nIndices);
@@ -389,4 +314,32 @@ int cPlugIn::Execute(msModel *pModel)
 	delete pRequest;
 	delete pInpModel;
 	return 0;
+}
+
+BOOL WINAPI DllMain(
+	HINSTANCE hinstDLL,  // handle to DLL module
+	DWORD fdwReason,     // reason for calling function
+	LPVOID lpReserved)  // reserved
+{
+	// Perform actions based on the reason for calling.
+	switch (fdwReason)
+	{
+	case DLL_PROCESS_ATTACH:
+		// Initialize once for each new process.
+		// Return FALSE to fail DLL load.
+		break;
+
+	case DLL_THREAD_ATTACH:
+		// Do thread-specific initialization.
+		break;
+
+	case DLL_THREAD_DETACH:
+		// Do thread-specific cleanup.
+		break;
+
+	case DLL_PROCESS_DETACH:
+		// Perform any necessary cleanup.
+		break;
+	}
+	return TRUE;  // Successful DLL_PROCESS_ATTACH.
 }

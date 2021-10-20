@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B45E30A6-CAA9-434C-ABC4-14E1B9322AE9}</ProjectGuid>
+    <RootNamespace>msLTBImporter</RootNamespace>
+    <Keyword>MFCDLLProj</Keyword>
+    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v141_xp</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v141_xp</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>16.0.31727.243</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>D:\Part_G\ms3dsdk185\msLib;D:\Part_G\glm-0.9.5.0;.\LTSDK\sdk;.\LTSDK\stdlith;.\LTSDK\runtime\kernel;.\LTSDK\runtime\lithtemplate;.\LTSDK\runtime\model;.\LTSDK\runtime\shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_USRDLL;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DisableSpecificWarnings>4267;4311;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>kernel32.lib;user32.lib;Comdlg32.lib;msModelLib.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\Part_G\ms3dsdk185\msLib\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>.\msLTBImporter.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>D:\Part_G\ms3dsdk185\msLib;D:\Part_G\glm-0.9.5.0;.\LTSDK\sdk;.\LTSDK\stdlith;.\LTSDK\runtime\kernel;.\LTSDK\runtime\lithtemplate;.\LTSDK\runtime\model;.\LTSDK\runtime\shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_USRDLL;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4267;4311;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalLibraryDirectories>D:\Part_G\ms3dsdk185\msLib\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>.\msLTBImporter.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalDependencies>kernel32.lib;user32.lib;Comdlg32.lib;msModelLib.lib</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="LTSDK\runtime\kernel\de_file.cpp" />
+    <ClCompile Include="LTSDK\runtime\model\d3d_model_load.cpp" />
+    <ClCompile Include="LTSDK\runtime\model\model.cpp" />
+    <ClCompile Include="LTSDK\runtime\model\modelallocations.cpp" />
+    <ClCompile Include="LTSDK\runtime\model\model_load.cpp" />
+    <ClCompile Include="LTSDK\runtime\render\d3dmeshrendobj_skel.cpp" />
+    <ClCompile Include="LTSDK\runtime\shared\engine_vars.cpp" />
+    <ClCompile Include="LTSDK\runtime\shared\genltstream.cpp" />
+    <ClCompile Include="LTSDK\sdk\LTEulerAngles.cpp" />
+    <ClCompile Include="LTSDK\sdk\ltquatbase.cpp" />
+    <ClCompile Include="LTSDK\stdlith\dynarray.cpp" />
+    <ClCompile Include="LTSDK\stdlith\helpers.cpp" />
+    <ClCompile Include="LTSDK\stdlith\l_allocator.cpp" />
+    <ClCompile Include="msLTBImporter.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="msLTBImporter.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="LTSDK\runtime\kernel\de_file.h" />
+    <ClInclude Include="LTSDK\runtime\lithtemplate\ltt_buffer.h" />
+    <ClInclude Include="LTSDK\runtime\model\ltb.h" />
+    <ClInclude Include="LTSDK\runtime\model\model.h" />
+    <ClInclude Include="LTSDK\runtime\model\modelallocations.h" />
+    <ClInclude Include="LTSDK\runtime\render\d3dmeshrendobj_skel.h" />
+    <ClInclude Include="LTSDK\runtime\shared\bdefs.h" />
+    <ClInclude Include="LTSDK\runtime\shared\gamemath.h" />
+    <ClInclude Include="LTSDK\runtime\shared\genltstream.h" />
+    <ClInclude Include="LTSDK\runtime\shared\renderobject.h" />
+    <ClInclude Include="LTSDK\sdk\iltmemory.h" />
+    <ClInclude Include="LTSDK\sdk\iltstream.h" />
+    <ClInclude Include="LTSDK\sdk\lithtech.h" />
+    <ClInclude Include="LTSDK\sdk\ltanimtracker.h" />
+    <ClInclude Include="LTSDK\sdk\ltassert.h" />
+    <ClInclude Include="LTSDK\sdk\ltbasedefs.h" />
+    <ClInclude Include="LTSDK\sdk\ltbasetypes.h" />
+    <ClInclude Include="LTSDK\sdk\ltcodes.h" />
+    <ClInclude Include="LTSDK\sdk\LTEulerAngles.h" />
+    <ClInclude Include="LTSDK\sdk\ltinteger.h" />
+    <ClInclude Include="LTSDK\sdk\ltlink.h" />
+    <ClInclude Include="LTSDK\sdk\ltmatrix.h" />
+    <ClInclude Include="LTSDK\sdk\ltmem.h" />
+    <ClInclude Include="LTSDK\sdk\ltplane.h" />
+    <ClInclude Include="LTSDK\sdk\ltquatbase.h" />
+    <ClInclude Include="LTSDK\sdk\ltrect.h" />
+    <ClInclude Include="LTSDK\sdk\ltrendererstats.h" />
+    <ClInclude Include="LTSDK\sdk\ltrotation.h" />
+    <ClInclude Include="LTSDK\sdk\ltsysoptim.h" />
+    <ClInclude Include="LTSDK\sdk\ltvector.h" />
+    <ClInclude Include="LTSDK\sdk\physics\coordinate_frame.h" />
+    <ClInclude Include="LTSDK\sdk\physics\math_phys.h" />
+    <ClInclude Include="LTSDK\sdk\physics\matrix.h" />
+    <ClInclude Include="LTSDK\sdk\physics\quaternion.h" />
+    <ClInclude Include="LTSDK\sdk\physics\vector.h" />
+    <ClInclude Include="LTSDK\sdk\sys\winoptim.h" />
+    <ClInclude Include="LTSDK\stdlith\dynarray.h" />
+    <ClInclude Include="LTSDK\stdlith\genlist.h" />
+    <ClInclude Include="LTSDK\stdlith\helpers.h" />
+    <ClInclude Include="LTSDK\stdlith\l_allocator.h" />
+    <ClInclude Include="msLTBImporter.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="msLTBImporter.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

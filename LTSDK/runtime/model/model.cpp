@@ -1241,6 +1241,9 @@ bool CDIModelDrawable::Load(ILTStream& file, LTB_Header &)
 					file >> v.m_Uv.tv;
 				}
 
+				//v.m_Uv.tu = 1.0f - v.m_Uv.tu;
+				v.m_Uv.tv = 1.0f - v.m_Uv.tv;
+
 				if (StreamData[iStream] & VERTDATATYPE_BASISVECTORS)
 				{
 					file >> dummy;
@@ -1251,6 +1254,7 @@ bool CDIModelDrawable::Load(ILTStream& file, LTB_Header &)
 					file >> dummy;
 				}
 
+				v.m_NumBones = 1;
 				v.m_Weights.m_iBone[0] = iBone;
 				v.m_Weights.m_fWeight[0] = 1.0f;
 
@@ -1352,6 +1356,9 @@ bool CDIModelDrawable::Load(ILTStream& file, LTB_Header &)
 					file >> v.m_Uv.tv;
 				}
 
+				//v.m_Uv.tu = 1.0f - v.m_Uv.tu;
+				v.m_Uv.tv = 1.0f - v.m_Uv.tv;
+
 				if (StreamData[iStream] & VERTDATATYPE_BASISVECTORS)
 				{
 					file >> dummy;
@@ -1362,6 +1369,7 @@ bool CDIModelDrawable::Load(ILTStream& file, LTB_Header &)
 					file >> dummy;
 				}
 
+				v.m_NumBones = 1;
 				v.m_Weights.m_iBone[0] = 0;
 				v.m_Weights.m_fWeight[0] = 1.0f;
 
@@ -1384,6 +1392,30 @@ bool CDIModelDrawable::Load(ILTStream& file, LTB_Header &)
 	file.SeekTo(iPos + iObjSize);
 
 	return true;
+}
+
+void NormalizeWeights(Weights& weights, uint32& count)
+{
+	Weights newWeights;
+	uint32 j;
+
+	memset(&newWeights, 0, sizeof(newWeights));
+
+	j = 0;
+
+	for (uint32 i = 0; i < count; i++)
+	{
+		if ((weights.m_iBone[i] != 0 && weights.m_iBone[i] != 255) && weights.m_fWeight[i] > 0.0f)
+		{
+			newWeights.m_iBone[j] = weights.m_iBone[i];
+			newWeights.m_fWeight[j] = weights.m_fWeight[i];
+			j++;
+		}
+	}
+
+	weights = newWeights;
+
+	count = j;
 }
 
 bool CDIModelDrawable::Load_SkelMesh_RenderDirect(ILTStream &file, uint32 iVertCount, uint32 iPolyCount, uint32 iMaxBonesPerTri, uint32 iMaxBonesPerVert, uint8 bReIndexBones, uint32 (&StreamData)[4], uint8 bUseMatrixPalettes)
@@ -1414,6 +1446,8 @@ bool CDIModelDrawable::Load_SkelMesh_RenderDirect(ILTStream &file, uint32 iVertC
 						file >> v.m_Vec.x;
 						file >> v.m_Vec.y;
 						file >> v.m_Vec.z;
+								v.m_NumBones = 1;
+								v.m_Weights.m_fWeight[0] = 1.0f;
 						break;
 					}
 					case 2:
@@ -1421,7 +1455,9 @@ bool CDIModelDrawable::Load_SkelMesh_RenderDirect(ILTStream &file, uint32 iVertC
 						file >> v.m_Vec.x;
 						file >> v.m_Vec.y;
 						file >> v.m_Vec.z;
+								v.m_NumBones = 2;
 						file >> v.m_Weights.m_fWeight[0];
+								v.m_Weights.m_fWeight[1] = 1.0f - (v.m_Weights.m_fWeight[0]);
 						break;
 					}
 					case 3:
@@ -1429,8 +1465,10 @@ bool CDIModelDrawable::Load_SkelMesh_RenderDirect(ILTStream &file, uint32 iVertC
 						file >> v.m_Vec.x;
 						file >> v.m_Vec.y;
 						file >> v.m_Vec.z;
+								v.m_NumBones = 3;
 						file >> v.m_Weights.m_fWeight[0];
 						file >> v.m_Weights.m_fWeight[1];
+								v.m_Weights.m_fWeight[2] = 1.0f - (v.m_Weights.m_fWeight[0] + v.m_Weights.m_fWeight[1]);
 						break;
 					}
 					case 4:
@@ -1438,9 +1476,11 @@ bool CDIModelDrawable::Load_SkelMesh_RenderDirect(ILTStream &file, uint32 iVertC
 						file >> v.m_Vec.x;
 						file >> v.m_Vec.y;
 						file >> v.m_Vec.z;
+								v.m_NumBones = 4;
 						file >> v.m_Weights.m_fWeight[0];
 						file >> v.m_Weights.m_fWeight[1];
 						file >> v.m_Weights.m_fWeight[2];
+								v.m_Weights.m_fWeight[3] = 1.0f - (v.m_Weights.m_fWeight[0] + v.m_Weights.m_fWeight[1] + v.m_Weights.m_fWeight[2]);
 						break;
 					}
 				}
@@ -1482,6 +1522,9 @@ bool CDIModelDrawable::Load_SkelMesh_RenderDirect(ILTStream &file, uint32 iVertC
 				file >> v.m_Uv.tv;
 			}
 
+			//v.m_Uv.tu = 1.0f - v.m_Uv.tu;
+			v.m_Uv.tv = 1.0f - v.m_Uv.tv;
+
 			if (StreamData[iStream] & VERTDATATYPE_BASISVECTORS)
 			{
 				file >> dummy;
@@ -1505,68 +1548,38 @@ bool CDIModelDrawable::Load_SkelMesh_RenderDirect(ILTStream &file, uint32 iVertC
 		m_Tris[i] = t;
 	}
 
-//	file >> iNumBones;
-//
-//	for (uint32 i = 0; i < iNumBones; ++i)
-//	{
-//		uint16 Bone_Start, Bone_Count;
-//
-//		file >> Bone_Start;
-//		file >> Bone_Count;
-//
-//		for (uint32 j = 0; j < 4; ++j)
-//		{
-//			file >> iBone[j];
-//		}
-//
-//		for (uint32 j = 0; j < Bone_Count; ++j)
-//		{
-//			uint32 k = Bone_Start + j;
-//
-//			m_Verts[k].m_Weights.m_iBone[0] = iBone[0];
-//			m_Verts[k].m_Weights.m_iBone[1] = iBone[1];
-//			m_Verts[k].m_Weights.m_iBone[2] = iBone[2];
-//			m_Verts[k].m_Weights.m_iBone[3] = iBone[3];
-//		}
-//
-//		file >> dummy;
-//	}
+	file >> iNumBones;
 
-	struct BoneSetListItem
+	for (uint32 i = 0; i < iNumBones; ++i)
 	{
-		uint16 iFirstVertIndex, iVertCount;
-		uint8 BoneSetArray[4];
-		uint32 iIndexIntoIndexBuff;
-	};
+		uint16 Bone_Start, Bone_Count;
 
-	file.Read(&iNumBones, sizeof(iNumBones));
+		file >> Bone_Start;
+		file >> Bone_Count;
 
-	BoneSetListItem *m_pBoneSetArray = new BoneSetListItem[iNumBones];
-	if ( !m_pBoneSetArray )
-		return false;
-
-	file.Read(m_pBoneSetArray, sizeof(BoneSetListItem) * iNumBones);
-
-	for (int j=0; j<iNumBones; j++)
-	{
-		BoneSetListItem *BoneSet = &m_pBoneSetArray[j];
-
-		for (int i=BoneSet->iFirstVertIndex; i<BoneSet->iFirstVertIndex+BoneSet->iVertCount; i++)
+		for (uint32 j = 0; j < 4; ++j)
 		{
-			m_Verts[i].m_Weights.m_iBone[0] = BoneSet->BoneSetArray[0];
-			m_Verts[i].m_Weights.m_iBone[1] = BoneSet->BoneSetArray[1];
-			m_Verts[i].m_Weights.m_iBone[2] = BoneSet->BoneSetArray[2];
-			m_Verts[i].m_Weights.m_iBone[3] = BoneSet->BoneSetArray[3];
+			file >> iBone[j];
 		}
+
+		for (uint32 j = 0; j < Bone_Count; ++j)
+		{
+			uint32 k = Bone_Start + j;
+
+			m_Verts[k].m_Weights.m_iBone[0] = iBone[0];
+			m_Verts[k].m_Weights.m_iBone[1] = iBone[1];
+			m_Verts[k].m_Weights.m_iBone[2] = iBone[2];
+			m_Verts[k].m_Weights.m_iBone[3] = iBone[3];
+		}
+
+		file >> dummy;
 	}
 
-	for (int j=0; j<m_Verts.GetSize(); j++)
+	for (uint32 j=0; j<m_Verts.GetSize(); j++)
 	{
-		ModelVert *v = &m_Verts[j];
+		ModelVert& v = m_Verts[j];
 
-		dsi_PrintToConsole( "%s %04d [%03d %03d %03d %03d] [%f %f %f %f]\n", m_pName, j, 
-			v->m_Weights.m_iBone[0], v->m_Weights.m_iBone[1], v->m_Weights.m_iBone[2], v->m_Weights.m_iBone[3], 
-			v->m_Weights.m_fWeight[0], v->m_Weights.m_fWeight[1], v->m_Weights.m_fWeight[2], v->m_Weights.m_fWeight[3] );
+		NormalizeWeights(v.m_Weights, v.m_NumBones);
 	}
 
 	return true;
@@ -1619,7 +1632,9 @@ bool CDIModelDrawable::Load_SkelMesh_MatrixPalettes(ILTStream &file, uint32 iVer
 						file >> v.m_Vec.x;
 						file >> v.m_Vec.y;
 						file >> v.m_Vec.z;
-						file >> dummy;		// float blend1
+								v.m_NumBones = 2;
+						file >> v.m_Weights.m_fWeight[0];		// float blend1
+								v.m_Weights.m_fWeight[1] = 1.0f - (v.m_Weights.m_fWeight[0]);
 						file >> v.m_Weights.m_iBone[0];
 						file >> v.m_Weights.m_iBone[1];
 						file >> v.m_Weights.m_iBone[2];
@@ -1631,8 +1646,10 @@ bool CDIModelDrawable::Load_SkelMesh_MatrixPalettes(ILTStream &file, uint32 iVer
 						file >> v.m_Vec.x;
 						file >> v.m_Vec.y;
 						file >> v.m_Vec.z;
-						file >> dummy;		// float blend1
-						file >> dummy;		// float blend2
+								v.m_NumBones = 3;
+						file >> v.m_Weights.m_fWeight[0];		// float blend1
+						file >> v.m_Weights.m_fWeight[1];		// float blend2
+								v.m_Weights.m_fWeight[2] = 1.0f - (v.m_Weights.m_fWeight[0] + v.m_Weights.m_fWeight[1]);
 						file >> v.m_Weights.m_iBone[0];
 						file >> v.m_Weights.m_iBone[1];
 						file >> v.m_Weights.m_iBone[2];
@@ -1644,9 +1661,11 @@ bool CDIModelDrawable::Load_SkelMesh_MatrixPalettes(ILTStream &file, uint32 iVer
 						file >> v.m_Vec.x;
 						file >> v.m_Vec.y;
 						file >> v.m_Vec.z;
-						file >> dummy;		// float blend1
-						file >> dummy;		// float blend2
-						file >> dummy;		// float blend3
+								v.m_NumBones = 4;
+						file >> v.m_Weights.m_fWeight[0];		// float blend1
+						file >> v.m_Weights.m_fWeight[1];		// float blend2
+						file >> v.m_Weights.m_fWeight[2];		// float blend3
+								v.m_Weights.m_fWeight[3] = 1.0f - (v.m_Weights.m_fWeight[0] + v.m_Weights.m_fWeight[1] + v.m_Weights.m_fWeight[2]);
 						file >> v.m_Weights.m_iBone[0];
 						file >> v.m_Weights.m_iBone[1];
 						file >> v.m_Weights.m_iBone[2];
@@ -1700,6 +1719,9 @@ bool CDIModelDrawable::Load_SkelMesh_MatrixPalettes(ILTStream &file, uint32 iVer
 				file >> v.m_Uv.tv;
 			}
 
+			//v.m_Uv.tu = 1.0f - v.m_Uv.tu;
+			v.m_Uv.tv = 1.0f - v.m_Uv.tv;
+
 			if (StreamData[iStream] & VERTDATATYPE_BASISVECTORS)
 			{
 				file >> dummy;		// S.x
@@ -1721,6 +1743,13 @@ bool CDIModelDrawable::Load_SkelMesh_MatrixPalettes(ILTStream &file, uint32 iVer
 		file >> t.m_Indices[2];
 
 		m_Tris[i] = t;
+	}
+
+	for (uint32 j = 0; j < m_Verts.GetSize(); j++)
+	{
+		ModelVert& v = m_Verts[j];
+
+		NormalizeWeights(v.m_Weights, v.m_NumBones);
 	}
 
 	return true;

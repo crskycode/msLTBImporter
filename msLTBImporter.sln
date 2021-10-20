@@ -1,7 +1,9 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "msLTBImporter", "msLTBImporter.vcproj", "{B45E30A6-CAA9-434C-ABC4-14E1B9322AE9}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31727.386
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "msLTBImporter", "msLTBImporter.vcxproj", "{B45E30A6-CAA9-434C-ABC4-14E1B9322AE9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,5 +18,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4B174834-5B99-4E89-8DB0-A1B5BF143B14}
 	EndGlobalSection
 EndGlobal
